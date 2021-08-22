@@ -2,23 +2,16 @@ package com.bignerdranch.android.geoquiz
 
 import android.annotation.SuppressLint
 import android.app.Activity
-import android.app.ActivityOptions
 import android.content.Intent
-import android.os.Build
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
-import android.view.Gravity
 import android.view.View
 import android.widget.Button
 import android.widget.ImageButton
 import android.widget.TextView
 import android.widget.Toast
-import androidx.activity.result.ActivityResult
-import androidx.activity.result.contract.ActivityResultContracts
+import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.ViewModelProviders
-import org.w3c.dom.Text
 
 private const val TAG = "MainActivity"
 private const val KEY_INDEX = "index"
@@ -71,18 +64,18 @@ class MainActivity : AppCompatActivity() {
 
 
         // set event listeners
-        trueBtn.setOnClickListener {view: View ->
+        trueBtn.setOnClickListener {
             checkAnswer(true)
             if (quizViewModel.numberOfQuestionsAnswered == quizViewModel.questionBank.size) {
                 val percentage = quizViewModel.numberOfCorrectAnswers * 100 / quizViewModel.questionBank.size
                 Toast.makeText(this, "you scored $percentage %", Toast.LENGTH_LONG).show()
             }
         }
-        falseBtn.setOnClickListener {view: View ->
+        falseBtn.setOnClickListener {
             checkAnswer(false)
         }
 
-        cheatBtn.setOnClickListener {view: View ->
+        cheatBtn.setOnClickListener {
             val answerIsTrue = quizViewModel.currentQuestionAnswer
             val intent = CheatActivity.newIntent(this@MainActivity, answerIsTrue)
             startActivityForResult(intent, REQUEST_CODE_CHEAT)
@@ -90,18 +83,18 @@ class MainActivity : AppCompatActivity() {
             //resultLauncher.launch(intent)
         }
 
-        nextBtn.setOnClickListener{view: View ->
+        nextBtn.setOnClickListener{
             quizViewModel.currentIndex = (quizViewModel.currentIndex + 1) % quizViewModel.questionBank.size
             updateQuestion()
         }
 
-        prevBtn.setOnClickListener{view: View ->
+        prevBtn.setOnClickListener{
             quizViewModel.currentIndex = (quizViewModel.currentIndex - 1)
             if (quizViewModel.currentIndex < 0) {quizViewModel.currentIndex = 0}
             updateQuestion()
         }
 
-        questionTxt.setOnClickListener{view: View ->
+        questionTxt.setOnClickListener{
             quizViewModel.currentIndex = (quizViewModel.currentIndex + 1) % quizViewModel.questionBank.size
             updateQuestion()
         }
@@ -166,7 +159,7 @@ class MainActivity : AppCompatActivity() {
 
         if (response == correctAnswer) quizViewModel.numberOfCorrectAnswers++
         quizViewModel.numberOfQuestionsAnswered++
-        quizViewModel.questionBank[quizViewModel.currentIndex].isAnswered = true;
+        quizViewModel.questionBank[quizViewModel.currentIndex].isAnswered = true
         setAnswerBtnVisibility()
     }
 
