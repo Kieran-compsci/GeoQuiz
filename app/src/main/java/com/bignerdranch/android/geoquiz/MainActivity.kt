@@ -1,7 +1,10 @@
 package com.bignerdranch.android.geoquiz
 
+import android.annotation.SuppressLint
 import android.app.Activity
+import android.app.ActivityOptions
 import android.content.Intent
+import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
@@ -33,6 +36,9 @@ class MainActivity : AppCompatActivity() {
     private lateinit var nextBtn: ImageButton
     private lateinit var prevBtn: ImageButton
     private lateinit var questionTxt: TextView
+    private lateinit var tokenTxt: TextView
+
+    @SuppressLint("RestrictedApi")
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -58,6 +64,11 @@ class MainActivity : AppCompatActivity() {
         nextBtn = findViewById(R.id.nextBtn)
         prevBtn = findViewById(R.id.prevBtn)
         questionTxt = findViewById(R.id.questionTxt)
+        tokenTxt = findViewById(R.id.tokenTxt)
+
+        // programmatically set init cheat token text, the same call is used in updateCheatTokenText()
+        tokenTxt.text = getString(R.string.cheat_tokens, quizViewModel.cheatTokens)
+
 
         // set event listeners
         trueBtn.setOnClickListener {view: View ->
@@ -75,6 +86,7 @@ class MainActivity : AppCompatActivity() {
             val answerIsTrue = quizViewModel.currentQuestionAnswer
             val intent = CheatActivity.newIntent(this@MainActivity, answerIsTrue)
             startActivityForResult(intent, REQUEST_CODE_CHEAT)
+
             //resultLauncher.launch(intent)
         }
 
@@ -101,7 +113,14 @@ class MainActivity : AppCompatActivity() {
         super.onActivityResult(requestCode, resultCode, data)
         if (resultCode != Activity.RESULT_OK) return
         if (requestCode == REQUEST_CODE_CHEAT) {
-            quizViewModel.questionBank[quizViewModel.currentIndex].cheated = data?.getBooleanExtra(EXTRA_ANSWER_SHOWN, false) ?: false
+            val userCheated: Boolean = data?.getBooleanExtra(EXTRA_ANSWER_SHOWN, false) ?: false
+            quizViewModel.questionBank[quizViewModel.currentIndex].cheated = userCheated
+            if (userCheated) {
+                quizViewModel.cheatTokens--
+            }
+
+            setCheatBtnVisibility()
+            updateCheatTokenText()
         }
     }
 
@@ -159,6 +178,14 @@ class MainActivity : AppCompatActivity() {
             trueBtn.visibility = View.VISIBLE
             falseBtn.visibility = View.VISIBLE
         }
+    }
+
+    private fun setCheatBtnVisibility() {
+        if (quizViewModel.cheatTokens < 1) cheatBtn.visibility = View.INVISIBLE
+    }
+
+    private fun updateCheatTokenText() {
+        tokenTxt.text = getString(R.string.cheat_tokens, quizViewModel.cheatTokens)
     }
 
     private fun updateQuestion() {

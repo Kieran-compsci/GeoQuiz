@@ -11,7 +11,6 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 
 private const val EXTRA_ANSWER_IS_TRUE = "com.bignerdranch.android.geoquiz.answer_is_true"
-private const val EXTRA_QUIZ_VIEW_MODEL = "com.bignerdranch.android.geoquiz.quiz_view_model"
 const val EXTRA_ANSWER_SHOWN = "com.bignerdranch.android.geoquiz.answer_shown"
 private const val KEY_IS_CHEATER= "isCheater"
 
